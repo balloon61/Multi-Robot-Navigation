@@ -1,0 +1,21 @@
+<launch>
+<param name="use_sim_time" value="true"/>
+ <arg name="open_rviz" default="true"/>
+
+  <!-- Arguments -->
+  <arg name="map_file" default="$(find turtlebot_navigation)/maps/closeworld2map.yaml"/>
+
+
+
+  <!-- Map server -->
+  <node pkg="map_server" name="map_server" type="map_server" args="$(arg map_file)">
+    <param name="frame_id" value="map"/>
+  </node>
+
+
+  <!-- AMCL -->
+  <include file="$(find turtlebot_navigation)/launch/amcl.launch"/>
+
+
+
+</launch>

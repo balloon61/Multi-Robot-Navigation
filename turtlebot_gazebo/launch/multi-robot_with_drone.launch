@@ -1,0 +1,128 @@
+<!-- 
+    ROS navigation stack with velocity smoother and safety (reactive) controller
+-->
+<launch>
+  <arg name="first_tb2"  default="tb2_0"/>
+  <arg name="second_tb2" default="tb2_1"/>
+  <arg name="third_tb2"  default="tb2_2"/>
+
+  <arg name="first_tb2_x_pos" default="-2.0"/>
+  <arg name="first_tb2_y_pos" default=" 0.0"/>
+  <arg name="first_tb2_z_pos" default=" 0.0"/>
+  <arg name="first_tb2_yaw"   default=" 1.57"/>
+
+  <arg name="second_tb2_x_pos" default=" 2.0"/>
+  <arg name="second_tb2_y_pos" default="0.0"/>
+  <arg name="second_tb2_z_pos" default=" 0.0"/>
+  <arg name="second_tb2_yaw"   default=" 1.57"/>
+
+  <arg name="third_tb2_x_pos" default=" 0.0"/>
+  <arg name="third_tb2_y_pos" default=" 2.0"/>
+  <arg name="third_tb2_z_pos" default=" 0.0"/>
+  <arg name="third_tb2_yaw"   default=" 0.0"/>
+  <arg name="gui"        default="true"/>
+  <arg name="world_file" default="$(env TURTLEBOT_GAZEBO_WORLD_FILE)"/>
+  <arg name="map_file" default="$(find turtlebot_gazebo)/maps/playground.yaml"/>
+
+
+  <!--include file="$(find gazebo_ros)/launch/empty_world.launch">
+    <arg name="use_sim_time" value="true"/>
+    <arg name="debug" value="false"/>
+    <arg name="gui" value="$(arg gui)" />
+    <arg name="world_name" value="$(arg world_file)"/>
+  </include-->
+ 
+  <!--node name="map_server" pkg="map_server" type="map_server" args="$(arg map_file)" >
+    <param name="frame_id" value="map"/>
+  </node-->
+  <node pkg="octomap_server" type="octomap_server_node" name="octomap_server" args="$(find turtlebot_gazebo)/worlds/my_octomap3.bt">
+
+    <param name="resolution" value="0.05" />
+    <!-- fixed map frame (set to 'map' if SLAM or localization running!) -->
+    <param name="frame_id" type="string" value="map" />
+    <!-- maximum range to integrate (speedup!) -->
+    <param name="sensor_model/max_range" value="30.0" />
+    <param name="latch" value="true"/>
+    <param name="pointcloud_min_z" value="-200.0"/>
+    <param name="pointcloud_max_z" value="200.0"/>
+    <!-- data source to integrate (PointCloud2) -->
+    <remap from="cloud_in" to="/camera/depth/points" />
+    <param name="pointcloud_min_z" value="-200.0"/>
+    <param name="pointcloud_max_z" value="200.0"/>
+    <param name="occupancy_min_z" value="0.02"/>
+    <param name="occupancy_max_z" value="2"/>               
+  </node>
+  
+  <group ns="$(arg first_tb2)">
+    <param name="tf_prefix" value="$(arg first_tb2)_tf" />
+    <include file="$(find turtlebot_gazebo)/launch/one_robot.launch">
+      <arg name="init_pose" value="-x $(arg first_tb2_x_pos) -y $(arg first_tb2_y_pos) -z $(arg first_tb2_z_pos) -Y $(arg first_tb2_yaw)"/>
+      <arg name="robot_name" value="$(arg first_tb2)"/>
+    </include>
+    <include file="$(find turtlebot_navigation)/launch/amcl_demo_multi.launch">
+      <arg name="initial_pose_x" value="$(arg first_tb2_x_pos)"/>
+      <arg name="initial_pose_y" value="$(arg first_tb2_y_pos)"/>
+      <arg name="initial_pose_a" value="$(arg first_tb2_yaw)"/>
+      <arg name="robot_name" value="$(arg first_tb2)"/>
+    </include>
+
+  </group>
+    <include file="$(find turtlebot_navigation)/laser/move_base_laser_multi.launch">
+      <arg name="robot_name" value="$(arg first_tb2)"/>
+      <arg name="number" value="0"/>
+    </include>
+    
+     <!--include file="$(find turtlebot_navigation)/laser/move_base_laser_multi.launch">
+      <arg name="robot_name" value="tb2_0"/>
+      <arg name="number" value="0"/>
+    </include-->
+<group ns="$(arg second_tb2)">
+    <param name="tf_prefix" value="$(arg second_tb2)_tf" />
+    <include file="$(find turtlebot_gazebo)/launch/one_robot.launch">
+      <arg name="init_pose" value="-x $(arg second_tb2_x_pos) -y $(arg second_tb2_y_pos) -z $(arg second_tb2_z_pos) -Y $(arg second_tb2_yaw)"/>
+      <arg name="robot_name" value="$(arg second_tb2)"/>
+    </include>
+    <include file="$(find turtlebot_navigation)/launch/amcl_demo_multi.launch">
+      <arg name="initial_pose_x" value="$(arg second_tb2_x_pos)"/>
+      <arg name="initial_pose_y" value="$(arg second_tb2_y_pos)"/>
+      <arg name="initial_pose_a" value="$(arg second_tb2_yaw)"/>
+      <arg name="robot_name" value="$(arg second_tb2)"/>
+    </include>
+    <!--include file="$(find turtlebot_navigation)/laser/move_base_laser_multi.launch">
+      <arg name="robot_name" value="tb2_0"/>
+      <arg name="number" value="0"/>
+    </include-->
+</group>
+ <include file="$(find turtlebot_navigation)/laser/move_base_laser_multi1.launch">
+      <arg name="robot_name" value="tb2_1"/>
+      <arg name="number" value="1"/>
+    </include>
+    
+<group ns="$(arg third_tb2)">
+	<param name="tf_prefix" value="$(arg third_tb2)_tf" />
+	<include file="$(find turtlebot_gazebo)/launch/one_robot.launch">
+	  <arg name="init_pose" value="-x $(arg third_tb2_x_pos) -y $(arg third_tb2_y_pos) -z $(arg third_tb2_z_pos) -Y $(arg third_tb2_yaw)"/>
+	  <arg name="robot_name" value="$(arg third_tb2)"/>
+	</include>
+	<include file="$(find turtlebot_navigation)/launch/amcl_demo_multi.launch">
+          <arg name="initial_pose_x" value="$(arg third_tb2_x_pos)"/>
+          <arg name="initial_pose_y" value="$(arg third_tb2_y_pos)"/>
+          <arg name="initial_pose_a" value="$(arg third_tb2_yaw)"/>
+	  <arg name="robot_name" value="$(arg third_tb2)"/>
+	</include>
+</group>
+ <include file="$(find turtlebot_navigation)/laser/move_base_laser_multi2.launch">
+      <arg name="robot_name" value="tb2_2"/>
+      <arg name="number" value="2"/>
+    </include>
+    
+    
+    
+    
+    
+    
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find turtlebot_gazebo)/rviz/multi_nav.rviz">
+    <remap from="/initialpose" to="/tb2_0/initialpose"/>
+    <remap from="/move_base_simple/goal" to="/tb2_0/move_base_simple/goal"/>
+  </node>
+</launch>

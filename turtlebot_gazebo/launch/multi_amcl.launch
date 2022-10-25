@@ -1,3 +1,6 @@
+<!-- 
+    ROS navigation stack with velocity smoother and safety (reactive) controller
+-->
 <launch>
   <!-- Map server -->
   <arg name="map_file" default="$(find turtlebot_gazebo)/maps/playground.yaml"/>

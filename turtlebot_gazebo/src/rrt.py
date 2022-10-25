@@ -16,7 +16,7 @@ def map_callback(map):
 
 if __name__ == "__main__":
 
-    rospy.init_node("rrtt")
+    rospy.init_node("rrtstar")
     rospy.Subscriber('/move_base/global_costmap/costmap', OccupancyGrid, map_callback)
 
     rospy.spin()

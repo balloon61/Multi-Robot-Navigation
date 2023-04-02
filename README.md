@@ -1,6 +1,6 @@
 # Multi-robot-navigation
 ## Desciption:
-Multi robot navigation using tb2 because tb2 use stereo camera for the localization, it might lack of feature for localization therefore, the localization algorithm can choose AMCL or EKF.
+Multi robot navigation using tb2 because tb2 use stereo camera for the localization, it might lack of feature for localization therefore, you can select the ekf launch file instead of the origonal localization (AMCL).
 
 ## Requirement:
 Turtlebot 2 install in your computer, gazebo, ros, octomap

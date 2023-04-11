@@ -6,7 +6,7 @@ Multi robot navigation using tb2 because tb2 use stereo camera for the localizat
 Turtlebot 2 install in your computer, gazebo, ros, octomap
 
 ### Installation of turtlebot2 
-The setting of Turtlebot on Noetic is mostly follows this website:
+The set up of Turtlebot on Noetic is mostly follows this website:
 https://gist.github.com/jeremyfix/0c5973aba508ee8b6e8d3c3077c6db1e
 
 
